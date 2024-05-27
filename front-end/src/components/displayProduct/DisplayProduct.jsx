@@ -4,20 +4,24 @@ import { StoreContext } from "../../context/StoreContext";
 import ProductItem from "../productItem/ProductItem";
 
 export const DisplayProduct = () => {
-  const { food_list } = useContext(StoreContext);
+  const { productList } = useContext(StoreContext);
+
+  function formatPrice(n) {
+    return n.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
+  }
 
   return (
     <div className="display-product" id="display-product">
       <div className="display-product-list">
-        {food_list.map((item, index) => {
+        {productList.map((item, index) => {
           return (
             <ProductItem
               key={index}
-              id={item._id}
+              productId={item.productId}
               name={item.name}
               description={item.description}
-              price={item.price}
-              image={item.image}
+              price={formatPrice(item.price)}
+              colorDTOs={item.colorDTOs}
             />
           );
         })}
