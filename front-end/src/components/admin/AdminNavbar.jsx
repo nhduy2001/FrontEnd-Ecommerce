@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { assets } from "../../assets/assets";
+import { assets } from "../assets/assets";
 import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -26,6 +26,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import CategoryIcon from "@mui/icons-material/Category";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import DevicesOtherTwoToneIcon from "@mui/icons-material/DevicesOtherTwoTone";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { deepOrange } from "@mui/material/colors";
 
 const drawerWidth = 240;
 
@@ -159,7 +161,7 @@ const AdminNavbar = ({ open, setOpen }) => {
             >
               <Tooltip title="Open settings">
                 <IconButton sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar sx={{ bgcolor: deepOrange[500] }}>A</Avatar>
                 </IconButton>
               </Tooltip>
               <Typography variant="h6" component="div" sx={{ ml: 1 }}>
@@ -224,7 +226,6 @@ const AdminNavbar = ({ open, setOpen }) => {
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <ListItemButton
-              // selected={selectedIndex === 0}
               onClick={() => handleListItemClick(0)}
               sx={{
                 ...(selectedIndex === 0 && {
@@ -297,6 +298,26 @@ const AdminNavbar = ({ open, setOpen }) => {
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary="Orders" />
+            </ListItemButton>
+          </Link>
+
+          <Link
+            to="/admin/accounts"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <ListItemButton
+              onClick={() => handleListItemClick(4)}
+              sx={{
+                ...(selectedIndex === 4 && {
+                  backgroundColor: "#00FFFF",
+                  color: "#1976d2",
+                }),
+              }}
+            >
+              <ListItemIcon>
+                <ManageAccountsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Accounts" />
             </ListItemButton>
           </Link>
         </List>

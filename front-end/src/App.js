@@ -8,10 +8,11 @@ import { useState } from "react";
 import LoginPopup from "./components/loginPopup/LoginPopup";
 import Product from "./pages/product/Product";
 import Dashboard from "./pages/admin/Dashboard";
-import AdminNavbar from "./components/admin/navbar/AdminNavbar";
+import AdminNavbar from "./components/admin/AdminNavbar";
 import Categories from "./pages/admin/Categories";
 import Products from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
+import Accounts from "./pages/admin/Accounts";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -75,6 +76,7 @@ const MainLayout = ({ setShowLogin }) => {
                 <Route path="/admin/categories" element={<Categories />} />
                 <Route path="/admin/products" element={<Products />} />
                 <Route path="/admin/orders" element={<Orders />} />
+                <Route path="/admin/accounts" element={<Accounts />} />
               </Routes>
             </Main>
           </Box>
