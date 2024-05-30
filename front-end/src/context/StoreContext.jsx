@@ -6,6 +6,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const url = "http://localhost:8080/api/v1/public/products";
+  const newUrl = "http://localhost:8080/api/v1/admin/products/all";
   const [productList, setProductList] = useState([]);
 
   const addToCart = (itemId) => {
@@ -21,7 +22,7 @@ const StoreContextProvider = (props) => {
   };
 
   const fetchProductList = async () => {
-    const response = await axios.get(url);
+    const response = await axios.get(newUrl);
     setProductList(response.data);
   };
 

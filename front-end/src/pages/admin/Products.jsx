@@ -14,9 +14,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import TextField from "@mui/material/TextField";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ColorButton from "../../components/admin/color/ColorButton";
 import ColorDialog from "../../components/admin/color/ColorDialog";
+import Typography from "@mui/material/Typography";
 import {
   Dialog,
   DialogTitle,
@@ -51,7 +51,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [openColorDialog, setOpenColorDialog] = useState(false);
-
+  const [selectedColorId, setSelectedColorId] = useState(0);
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -62,6 +62,7 @@ const Products = () => {
     price: 0,
     categoryIds: [],
     brandId: "",
+    colorDTOs: [],
   });
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -102,11 +103,44 @@ const Products = () => {
         ...prevProduct,
         categoryIds: typeof value === "string" ? value.split(",") : value,
       }));
-    } else {
+    } else if (name !== "colorDTOs") {
+      // Bỏ qua nếu name là "colorDTOs"
       setProduct((prevProduct) => ({
         ...prevProduct,
         [name]: value,
       }));
+    }
+  };
+
+  const handleColorUpload = (uploadedImages) => {
+    const foundColor = product.colorDTOs.find(
+      (color) => color.colorId === selectedColorId
+    );
+
+    if (foundColor) {
+      const updatedColors = product.colorDTOs.map((color) => {
+        if (color.colorId === selectedColorId) {
+          // Nếu tìm thấy màu, thay thế colorName và colorImage của màu đó bằng thông tin từ uploadedImages
+          return {
+            ...color,
+            colorName: uploadedImages[0].colorName,
+            colorImage: uploadedImages[0].colorImage,
+          };
+        }
+        return color;
+      });
+
+      // Cập nhật state với thông tin màu đã được thay đổi hoặc thêm mới
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        colorDTOs: updatedColors,
+      }));
+    } else {
+      // Tìm màu có colorId tương ứng trong colorDTOs
+      setProduct({
+        ...product,
+        colorDTOs: [...product.colorDTOs, ...uploadedImages],
+      });
     }
   };
 
@@ -128,7 +162,6 @@ const Products = () => {
       setSnackbarSeverity("success");
       setSnackbarMessage("Product added successfully!");
     } catch (error) {
-      console.log(product);
       console.error("Error adding product:", error);
       setSnackbarOpen(true);
       setSnackbarSeverity("error");
@@ -146,7 +179,13 @@ const Products = () => {
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
+    setProduct(product);
     setOpenEditDialog(true);
+  };
+
+  const handleColorId = (colorId) => {
+    setSelectedColorId(colorId);
+    setOpenColorDialog(true);
   };
 
   const handleEditDialogClose = () => {
@@ -164,13 +203,10 @@ const Products = () => {
 
   const handleEditDialogSave = async () => {
     try {
-      await axios.put(
-        `${baseURL}/${selectedProduct.productId}`,
-        selectedProduct
-      );
+      await axios.put(`${baseURL}/products`, product);
 
       const updatedProducts = products.map((p) =>
-        p.productId === selectedProduct.productId ? selectedProduct : p
+        p.productId === product.productId ? product : p
       );
       setProducts(updatedProducts);
 
@@ -188,7 +224,7 @@ const Products = () => {
 
   const handleDeleteDialogConfirm = async () => {
     try {
-      await axios.delete(`${baseURL}/${selectedProduct.productId}`);
+      await axios.delete(`${baseURL}/products/${selectedProduct.productId}`);
       const updatedProducts = products.filter(
         (product) => product.productId !== selectedProduct.productId
       );
@@ -262,22 +298,16 @@ const Products = () => {
                           {column.id === "action" ? (
                             <>
                               <IconButton
-                                color="primary"
+                                color="success"
                                 onClick={() => handleEditProduct(product)}
                               >
                                 <EditIcon />
                               </IconButton>
                               <IconButton
-                                color="secondary"
+                                color="error"
                                 onClick={() => handleDeleteProduct(product)}
                               >
                                 <DeleteForeverIcon />
-                              </IconButton>
-                              <IconButton
-                                color="success"
-                                onClick={() => handleDeleteProduct(product)}
-                              >
-                                <ColorLensIcon />
                               </IconButton>
                             </>
                           ) : column.format ? (
@@ -331,16 +361,6 @@ const Products = () => {
             type="text"
             fullWidth
             value={product.description}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            id="averageRating"
-            name="averageRating"
-            label="Average Rating"
-            type="number"
-            fullWidth
-            value={product.averageRating}
             onChange={handleInputChange}
           />
           <TextField
@@ -443,16 +463,122 @@ const Products = () => {
         <DialogTitle>Edit Product</DialogTitle>
         <DialogContent>
           <TextField
-            placeholder={selectedProduct ? selectedProduct.name : ""}
             autoFocus
             margin="dense"
-            id="productName"
+            id="name"
+            name="name"
             label="Product Name"
             type="text"
             fullWidth
-            value={product}
+            value={product.name}
             onChange={handleInputChange}
           />
+          <TextField
+            margin="dense"
+            id="description"
+            name="description"
+            label="Description"
+            type="text"
+            fullWidth
+            value={product.description}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            id="screenSize"
+            name="screenSize"
+            label="Screen Size"
+            type="number"
+            fullWidth
+            value={product.screenSize}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            id="ram"
+            name="ram"
+            label="RAM"
+            type="number"
+            fullWidth
+            value={product.ram}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            id="internalStorage"
+            name="internalStorage"
+            label="Internal Storage"
+            type="number"
+            fullWidth
+            value={product.internalStorage}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            id="price"
+            name="price"
+            label="Price"
+            type="number"
+            fullWidth
+            value={product.price}
+            onChange={handleInputChange}
+          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="categoryIds-label">Category</InputLabel>
+            <Select
+              labelId="categoryIds-label"
+              id="categoryIds"
+              name="categoryIds"
+              multiple
+              value={product.categoryIds}
+              onChange={handleInputChange}
+              input={<Input />}
+              renderValue={(selected) =>
+                selected
+                  .map(
+                    (id) =>
+                      categories.find((cat) => cat.categoryId === id)
+                        ?.categoryName
+                  )
+                  .join(", ")
+              }
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.categoryId} value={category.categoryId}>
+                  {category.categoryName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="brandId-label">Brand</InputLabel>
+            <Select
+              labelId="brandId-label"
+              id="brandId"
+              name="brandId"
+              value={product.brandId}
+              onChange={handleInputChange}
+            >
+              {brands.map((brand) => (
+                <MenuItem key={brand.brandId} value={brand.brandId}>
+                  {brand.brandName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography variant="subtitle1">Colors:</Typography>
+          <div key="showColor">
+            {product.colorDTOs.map((color) => (
+              <div key={color.colorId}>
+                <span>{color.colorName}</span>
+                {/* <Button onClick={() => handleEditColor(color.colorId)}> */}
+                <Button onClick={() => handleColorId(color.colorId)}>
+                  Edit Color
+                </Button>
+              </div>
+            ))}
+          </div>
+          <ColorButton onClick={handleColorButtonClick} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleEditDialogClose} color="primary">
@@ -479,7 +605,11 @@ const Products = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <ColorDialog open={openColorDialog} onClose={handleCloseColorDialog} />
+      <ColorDialog
+        open={openColorDialog}
+        onClose={handleCloseColorDialog}
+        onUpload={handleColorUpload}
+      />
     </>
   );
 };
