@@ -1,21 +1,24 @@
 import "./App.css";
-import { Navbar } from "./components/navbar/Navbar";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/home/Home";
-import Cart from "./pages/cart/Cart";
+import Home from "./pages/customer/Home";
 import CheckOut from "./pages/checkOut/CheckOut";
 import { useState } from "react";
 import LoginPopup from "./components/loginPopup/LoginPopup";
-import Product from "./pages/product/Product";
+import CustomerProducts from "./pages/customer/Products";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminNavbar from "./components/admin/AdminNavbar";
+import CustomerNavBar from "./components/customer/CustomerNavBar";
 import Categories from "./pages/admin/Categories";
-import Products from "./pages/admin/Products";
+import AdminProducts from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
 import Accounts from "./pages/admin/Accounts";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import { AppBar } from "@mui/material";
+import Header from "./components/customer/Header";
+import ExploreBrands from "./components/customer/ExploreBrands";
 
 const drawerWidth = 240;
 
@@ -74,7 +77,7 @@ const MainLayout = ({ setShowLogin }) => {
               <Routes>
                 <Route path="/admin" element={<Dashboard />} />
                 <Route path="/admin/categories" element={<Categories />} />
-                <Route path="/admin/products" element={<Products />} />
+                <Route path="/admin/products" element={<AdminProducts />} />
                 <Route path="/admin/orders" element={<Orders />} />
                 <Route path="/admin/accounts" element={<Accounts />} />
               </Routes>
@@ -83,13 +86,21 @@ const MainLayout = ({ setShowLogin }) => {
         </>
       ) : (
         <>
-          <Navbar setShowLogin={setShowLogin} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:productId" element={<Product />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<CheckOut />} />
-          </Routes>
+          <AppBar position="static" sx={{ mb: 1 }}>
+            <Container maxWidth="lg">
+              <CustomerNavBar />
+            </Container>
+          </AppBar>
+          <Container maxWidth="lg">
+            <Header />
+            <ExploreBrands />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<CustomerProducts />} />
+              {/* <Route path="/products/:productId" element={<Product />} /> */}
+              <Route path="/checkout" element={<CheckOut />} />
+            </Routes>
+          </Container>
         </>
       )}
     </div>
