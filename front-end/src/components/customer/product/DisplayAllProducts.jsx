@@ -12,6 +12,8 @@ import SortProduct from "./SortProduct";
 
 const DisplayAllProducts = () => {
   const [productList, setProductList] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+
   const location = useLocation();
   const navigate = useNavigate();
   const query = new URLSearchParams(location.search);
@@ -20,6 +22,7 @@ const DisplayAllProducts = () => {
     ram: query.get("ram") || "",
     storage: query.get("storage") || "",
     screen_size: query.get("screen_size") || "",
+    keyword: query.get("keyword") || "",
   });
   const [sortDir, setSortDir] = useState(query.get("sortDir") || "");
 
@@ -35,7 +38,8 @@ const DisplayAllProducts = () => {
     const queryString = buildQueryString({ ...filters, page, sortDir });
     ProductService.getAllProducts(queryString)
       .then((data) => {
-        setProductList(data);
+        setProductList(data.content);
+        setTotalProducts(data.totalElements);
       })
       .catch((error) => {
         console.error(
@@ -49,9 +53,18 @@ const DisplayAllProducts = () => {
     fetchProducts();
   }, [fetchProducts]);
 
+  // Xử lý sự kiện khi từ khóa tìm kiếm thay đổi
+  useEffect(() => {
+    const keyword = new URLSearchParams(location.search).get("keyword") || "";
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      keyword: keyword,
+    }));
+  }, [location.search]);
+
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    const queryString = buildQueryString({ ...newFilters, sortDir, page: 1 }); // Reset về trang 1 khi thay đổi bộ lọc
+    const queryString = buildQueryString({ ...newFilters, sortDir, page: 1 });
     navigate(`/products?${queryString}`);
   };
 
@@ -83,7 +96,7 @@ const DisplayAllProducts = () => {
             >
               <Pagination
                 page={page}
-                count={4}
+                count={Math.ceil(totalProducts / 10)}
                 variant="outlined"
                 color="primary"
                 renderItem={(item) => (

@@ -88,7 +88,7 @@ export const brand_list = [
     brand_image: brand_5,
   },
   {
-    brand_name: "nokie",
+    brand_name: "nokia",
     brand_image: brand_6,
   },
   {

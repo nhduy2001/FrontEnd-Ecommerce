@@ -7,6 +7,13 @@ import Typography from "@mui/material/Typography";
 import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 
 const SortProduct = ({ sortDir, onSortChange }) => {
+  const handleSort = (direction) => {
+    if (sortDir === direction) {
+      onSortChange(""); // Hủy sắp xếp nếu người dùng bấm lại nút hiện đang được chọn
+    } else {
+      onSortChange(direction);
+    }
+  };
   return (
     <>
       <Box sx={{ minWidth: 275, mt: 1, mb: 1 }}>
@@ -21,7 +28,7 @@ const SortProduct = ({ sortDir, onSortChange }) => {
               </Grid>
               <Grid item>
                 <IconButton
-                  onClick={() => onSortChange("asc")}
+                  onClick={() => handleSort("asc")}
                   color={sortDir === "asc" ? "primary" : "default"}
                 >
                   <ArrowUpward />
@@ -29,7 +36,7 @@ const SortProduct = ({ sortDir, onSortChange }) => {
               </Grid>
               <Grid item>
                 <IconButton
-                  onClick={() => onSortChange("desc")}
+                  onClick={() => handleSort("desc")}
                   color={sortDir === "desc" ? "primary" : "default"}
                 >
                   <ArrowDownward />

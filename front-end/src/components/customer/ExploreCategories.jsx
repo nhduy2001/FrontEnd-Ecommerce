@@ -3,31 +3,46 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Grid } from "@mui/material";
-import { brand_list } from "../../components/assets/assets";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 
-const ExploreBrands = () => {
+const ExploreCategories = () => {
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleBrandClick = (brand) => {
-    navigate(`/products?keyword=${brand}`); // Navigate to the products page with the selected brand
+  const handleCategoryClick = (category) => {
+    navigate(`/products?keyword=${category}`); // Navigate to the products page with the selected brand
   };
+
+  const category_list = [
+    {
+      category_name: "gaming",
+    },
+    {
+      category_name: "foldable",
+    },
+    {
+      category_name: "photography",
+    },
+  ];
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   return (
     <>
       <Box sx={{ minWidth: 275, mt: 1 }}>
         <Card variant="outlined">
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              Explore our brands
+              Explore based on needs
             </Typography>
             <Grid container spacing={2}>
-              {brand_list.map((item, index) => (
+              {category_list.map((item, index) => (
                 <Grid item xs={3} sm={3} md={1.5} key={index}>
                   <Card
                     variant="outlined"
                     sx={{ height: "100%" }}
-                    onClick={() => handleBrandClick(item.brand_name)}
+                    onClick={() => handleCategoryClick(item.category_name)}
                   >
                     <Box
                       sx={{
@@ -38,17 +53,10 @@ const ExploreBrands = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         overflow: "hidden",
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
                     >
-                      <img
-                        src={item.brand_image}
-                        alt={`Brand ${index}`}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                        }}
-                      />
+                      {capitalizeFirstLetter(item.category_name)}
                     </Box>
                   </Card>
                 </Grid>
@@ -61,4 +69,4 @@ const ExploreBrands = () => {
   );
 };
 
-export default ExploreBrands;
+export default ExploreCategories;

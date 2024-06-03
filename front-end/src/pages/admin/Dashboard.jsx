@@ -9,7 +9,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
-import CustomSnackbar from "../../components/admin/CustomSnackbar";
+import CustomSnackbar from "../../components/CustomSnackbar";
 
 function formatPrice(n) {
   return n.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
