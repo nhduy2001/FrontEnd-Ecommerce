@@ -32,6 +32,7 @@ const LoginCheck = () => {
   };
 
   const handleMenuClose = () => {
+    navigate("/profile");
     setAnchorEl(null);
     handleMobileMenuClose();
   };

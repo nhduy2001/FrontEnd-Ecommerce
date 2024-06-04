@@ -33,6 +33,9 @@ const Login = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          border: "2px solid #ccc",
+          borderRadius: "10px",
+          padding: "10px",
         }}
       >
         <Typography component="h1" variant="h5">

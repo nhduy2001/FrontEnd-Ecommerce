@@ -4,6 +4,7 @@ import CheckoutService from "../../../service/customer/CheckoutService";
 
 const FinalCartInfo = ({ detailedCartList, shippingInfo }) => {
   const [totalPrice, setTotalPrice] = useState(0);
+  const baseUrl = "http://localhost:3000/";
 
   useEffect(() => {
     const calculateTotalPrice = () => {
@@ -20,6 +21,7 @@ const FinalCartInfo = ({ detailedCartList, shippingInfo }) => {
     try {
       await CheckoutService.addOrder(shippingInfo, totalPrice);
       console.log("Order confirmed!");
+      window.location.href = baseUrl;
     } catch (error) {
       console.error("Failed to confirm order:", error);
     }

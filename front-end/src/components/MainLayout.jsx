@@ -17,6 +17,8 @@ import Header from "../components/customer/Header";
 import ExploreBrands from "../components/customer/ExploreBrands";
 import ExploreCategories from "./customer/ExploreCategories";
 import Checkout from "../pages/customer/Checkout";
+import TrackingOrder from "../pages/customer/TrackingOrder";
+import Profile from "../pages/customer/Profile";
 
 const drawerWidth = 240;
 
@@ -87,6 +89,8 @@ const MainLayout = () => {
               <Route path="/products/:productId" element={<SingleProduct />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order" element={<TrackingOrder />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </Container>
         </>

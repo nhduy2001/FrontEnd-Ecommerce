@@ -33,7 +33,16 @@ const AuthService = {
       localStorage.setItem("user", JSON.stringify(user.sub));
       return response.data;
     } catch (error) {
-      throw new Error("Không thể đăng nhập.");
+      throw new Error("Cannot Login");
+    }
+  },
+
+  async signUp(user) {
+    try {
+      const response = await axios.post(`${baseUrl}/signUp`, user);
+      return response.data;
+    } catch (error) {
+      throw new Error("Cannot Sign Up");
     }
   },
 

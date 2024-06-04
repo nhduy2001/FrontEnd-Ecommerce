@@ -127,7 +127,6 @@ const CustomerNavBar = () => {
           >
             <TrackingOrder />
             <Cart numberCart={numberCart} />{" "}
-            {/* Render the cart component with the number of items */}
             <LoginCheck />
           </Box>
         </Toolbar>
