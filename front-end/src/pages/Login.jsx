@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Box, TextField, Button, Typography } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
-import axios from "axios";
+import AuthService from "../service/AuthService";
+import ProfileService from "../service/customer/ProfileService";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -11,29 +11,14 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      // Make a POST request to your backend API for authentication
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/public/signIn",
-        {
-          username,
-          password,
-        }
-      );
+      await AuthService.signIn(username, password);
+      const role = await ProfileService.getRole(username);
 
-      console.log(localStorage.getItem("token"));
-
-      const token = response.data.token;
-      const refreshToken = response.data.refreshToken;
-      const user = jwtDecode(token);
-
-      // Store the token in localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user.sub)); 
-
-      // Redirect or perform any action upon successful login
-      navigate("/");
-      console.log("Login successful");
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       // Handle login error

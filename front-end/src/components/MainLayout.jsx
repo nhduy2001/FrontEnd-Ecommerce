@@ -16,6 +16,7 @@ import Cart from "../pages/customer/Cart";
 import Header from "../components/customer/Header";
 import ExploreBrands from "../components/customer/ExploreBrands";
 import ExploreCategories from "./customer/ExploreCategories";
+import Checkout from "../pages/customer/Checkout";
 
 const drawerWidth = 240;
 
@@ -85,6 +86,7 @@ const MainLayout = () => {
               <Route path="/products" element={<CustomerProducts />} />
               <Route path="/products/:productId" element={<SingleProduct />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
             </Routes>
           </Container>
         </>

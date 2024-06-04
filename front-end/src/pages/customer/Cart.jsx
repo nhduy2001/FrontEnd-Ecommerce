@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
   Card,
@@ -19,7 +20,6 @@ function formatPrice(n) {
 }
 
 const Cart = () => {
-  const [cartList, setCartList] = useState([]);
   const [detailedCartList, setDetailedCartList] = useState([]);
 
   useEffect(() => {
@@ -27,7 +27,6 @@ const Cart = () => {
       try {
         // Fetch cart items
         const carts = await CartService.getCart();
-        setCartList(carts);
         console.log("Cart items:", carts);
 
         // Extract product IDs from cart items
@@ -52,7 +51,6 @@ const Cart = () => {
 
         setDetailedCartList(detailedCartItems);
         console.log("Detailed Cart items:", detailedCartItems);
-        console.log(cartList);
       } catch (error) {
         console.error(
           "Đã xảy ra lỗi khi lấy danh sách sản phẩm:",
@@ -62,13 +60,26 @@ const Cart = () => {
     };
 
     fetchCartAndProductDetails();
-  }, [cartList]);
+  }, []);
 
   const handleUpdateQuantity = (cartDetailId, newQuantity) => {
-    // Xử lý cập nhật số lượng ở đây
-    console.log(
-      `Cập nhật số lượng cho cartDetailId ${cartDetailId} thành ${newQuantity}`
-    );
+    try {
+      // Lấy chi tiết sản phẩm từ giỏ hàng dựa trên cartDetailId
+      const updatedCartList = detailedCartList.map((item) => {
+        if (item.cartDetailId === cartDetailId) {
+          // Cập nhật số lượng sản phẩm
+          return { ...item, quantity: parseInt(newQuantity) };
+        }
+        return item;
+      });
+
+      // Cập nhật giỏ hàng với số lượng sản phẩm mới
+      setDetailedCartList(updatedCartList);
+    } catch (error) {
+      console.error(
+        `Lỗi khi cập nhật số lượng cho sản phẩm có cartDetailId ${cartDetailId}: ${error.message}`
+      );
+    }
   };
 
   const handleRemoveProduct = (cartDetailId) => {
@@ -76,7 +87,14 @@ const Cart = () => {
     console.log(`Xoá sản phẩm có cartDetailId ${cartDetailId}`);
   };
 
-  const handleUpdateCart = () => {};
+  const handleCheckout = async () => {
+    try {
+      const response = await CartService.updateCart(detailedCartList);
+      console.log("Giỏ hàng đã được cập nhật thành công:", response);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật giỏ hàng:", error.message);
+    }
+  };
 
   return (
     <Box sx={{ minWidth: 275, mt: 1 }}>
@@ -143,22 +161,17 @@ const Cart = () => {
               </Grid>
             </Grid>
           ))}
-          <Grid container spacing={3} justifyContent="center">
-            <Grid item>
+          <Link to="/checkout">
+            <Grid container justifyContent="center">
               <Button
-                variant="outlined"
+                variant="contained"
                 color="primary"
-                onClick={() => handleUpdateCart()}
+                onClick={() => handleCheckout()}
               >
-                Update Cart
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary">
                 Proceed to checkout
               </Button>
             </Grid>
-          </Grid>
+          </Link>
         </CardContent>
       </Card>
     </Box>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,6 +9,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
 import CustomSnackbar from "../../components/CustomSnackbar";
+import DashboardService from "../../service/admin/DashboardService";
 
 function formatPrice(n) {
   return n.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
@@ -36,10 +36,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/admin/products/all"
-        );
-        setProducts(response.data);
+        const productsData = await DashboardService.getAllProducts();
+        setProducts(productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -50,38 +48,16 @@ const Dashboard = () => {
 
   const handleCheckboxChange = async (productId, newFeaturedValue) => {
     try {
-      // Kiểm tra số lượng sản phẩm featured trước khi cập nhật
-      const featuredProductsCount = products.filter(
-        (product) => product.featured
-      ).length;
-      if (newFeaturedValue && featuredProductsCount >= 5) {
-        // Nếu đã đạt đến giới hạn, hiển thị thông báo hoặc thực hiện các hành động khác
-        setSnackbarOpen(true);
-        setSnackbarSeverity("error");
-        setSnackbarMessage(
-          "Exceeded the allowed number of featured products (5 products)!"
-        );
-        return;
-      }
-
-      // Gửi yêu cầu PUT tới endpoint backend để cập nhật sản phẩm
-      await axios.put("http://localhost:8080/api/v1/admin/products", {
-        ...products.find((product) => product.productId === productId),
-        featured: newFeaturedValue,
-      });
-
-      // Cập nhật lại danh sách sản phẩm sau khi cập nhật thành công
-      const updatedProducts = products.map((product) =>
-        product.productId === productId
-          ? { ...product, featured: newFeaturedValue }
-          : product
+      await DashboardService.updateProduct(
+        productId,
+        newFeaturedValue,
+        products,
+        setProducts,
+        setSnackbarOpen,
+        setSnackbarSeverity,
+        setSnackbarMessage
       );
-      setProducts(updatedProducts);
-      // Hiển thị snack bar
-      setSnackbarOpen(true);
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Update success!");
-    } catch (error) {
+    }catch (error) {
       console.error("Error updating product:", error);
     }
   };

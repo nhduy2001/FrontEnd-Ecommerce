@@ -18,9 +18,19 @@ async function getNewToken(refreshToken) {
 
 const AuthService = {
   // Gửi yêu cầu đăng nhập và nhận token và refresh token
-  async signIn(credentials) {
+  async signIn(username, password) {
     try {
-      const response = await axios.post(`${baseUrl}/signIn`, credentials);
+      const response = await axios.post(`${baseUrl}/signIn`, {
+        username,
+        password,
+      });
+      const token = response.data.token;
+      const refreshToken = response.data.refreshToken;
+      const user = jwtDecode(token);
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(user.sub));
       return response.data;
     } catch (error) {
       throw new Error("Không thể đăng nhập.");
