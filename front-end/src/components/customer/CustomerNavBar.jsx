@@ -138,7 +138,8 @@ const CustomerNavBar = () => {
             sx={{ display: { xs: "flex", md: "flex", alignItems: "center" } }}
           >
             <TrackingOrder />
-            <Cart numberCart={numberCart} /> <LoginCheck />
+            <Cart numberCart={numberCart} />
+            <LoginCheck />
           </Box>
         </Toolbar>
       </Box>

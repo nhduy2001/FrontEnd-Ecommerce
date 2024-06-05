@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import CustomSnackbar from "../../components/CustomSnackbar";
-import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import TextField from "@mui/material/TextField";
 import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TextField,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton,
+  Button,
   Box,
 } from "@mui/material";
-import Button from "@mui/material/Button";
+import CategoryService from "../../service/admin/CategoryService";
 
 const columns = [
   { id: "categoryId", label: "Id", minWidth: 100 },
   { id: "categoryName", label: "Name", minWidth: 170 },
-  // { id: "createdAt", label: "Created At", minWidth: 100 },
-  // { id: "lastModified", label: "Last Modified", minWidth: 100 },
   { id: "action", label: "Action", minWidth: 100 },
 ];
 
@@ -44,13 +42,11 @@ const Categories = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const baseURL = "http://localhost:8080/api/v1/admin/categories";
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(baseURL);
-        setCategories(response.data);
+        const response = await CategoryService.getALlCategories();
+        setCategories(response);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,24 +60,19 @@ const Categories = () => {
   };
 
   const handleAddClick = async () => {
-    // Tạo object category
     const category = {
       categoryName: categoryName,
     };
 
     try {
-      // Gửi yêu cầu POST đến backend
-      const response = await axios.post(baseURL, category);
+      const response = await CategoryService.addCategory(category);
 
-      // Xử lý response từ backend nếu cần
-      console.log("Response from backend:", response.data);
+      console.log("Response from backend:", response);
 
-      setCategories([...categories, response.data]);
+      setCategories([...categories, response]);
 
-      // Đóng dialog sau khi thêm thành công
       handleAddDialogClose();
     } catch (error) {
-      // Xử lý lỗi nếu có
       console.error("Error adding category:", error);
     }
   };
@@ -113,14 +104,13 @@ const Categories = () => {
   };
 
   const handleEditDialogSave = async () => {
-    // Tạo object category
     const category = {
       categoryId: selectedCategory.categoryId,
       categoryName: categoryName,
     };
 
     try {
-      await axios.put(baseURL, category);
+      await CategoryService.updateCategory(category);
 
       const updatedCategories = categories.map((category) =>
         category.categoryId === selectedCategory.categoryId
@@ -142,7 +132,7 @@ const Categories = () => {
 
   const handleDeleteDialogConfirm = async () => {
     try {
-      await axios.delete(`${baseURL}/${selectedCategory.categoryId}`);
+      await CategoryService.deleteCategory(selectedCategory.categoryId);
       const updatedCategories = categories.filter(
         (category) => category.categoryId !== selectedCategory.categoryId
       );

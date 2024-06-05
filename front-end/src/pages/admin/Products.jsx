@@ -1,47 +1,55 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import CustomSnackbar from "../../components/CustomSnackbar";
-import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import TextField from "@mui/material/TextField";
 import ColorButton from "../../components/admin/color/ColorButton";
 import ColorDialog from "../../components/admin/color/ColorDialog";
-import Typography from "@mui/material/Typography";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Box,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  IconButton,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  Input,
+  MenuItem,
 } from "@mui/material";
-import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import Input from "@mui/material/Input";
-import MenuItem from "@mui/material/MenuItem";
+import ProductService from "../../service/admin/ProductService";
 
 function formatPrice(n) {
   return n.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 }
 
 const columns = [
+  { id: "colorDTOs", label: "Image", minWidth: 170 },
   { id: "name", label: "Name", minWidth: 170 },
-  { id: "averageRating", label: "Average Rating", minWidth: 100 },
+  { id: "categoryIds", label: "Category", minWidth: 100 },
   { id: "ram", label: "Ram", minWidth: 100 },
   { id: "internalStorage", label: "Internal Storage", minWidth: 100 },
   { id: "screenSize", label: "Screen Size", minWidth: 100 },
   { id: "price", label: "Price", minWidth: 100, format: formatPrice },
+  { id: "createdAt", label: "Create On", minWidth: 100, format: formatPrice },
+  {
+    id: "lastModified",
+    label: "Last Updated On",
+    minWidth: 100,
+    format: formatPrice,
+  },
   { id: "action", label: "Action", minWidth: 100 },
 ];
 
@@ -73,21 +81,19 @@ const Products = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const baseURL = "http://localhost:8080/api/v1/admin";
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [productResponse, categoryResponse, brandResponse] =
           await Promise.all([
-            axios.get(`${baseURL}/products/all`),
-            axios.get(`${baseURL}/categories`),
-            axios.get(`${baseURL}/brands`),
+            ProductService.getAllProducts(),
+            ProductService.getAllCategories(),
+            ProductService.getAllBrands(),
           ]);
 
-        setProducts(productResponse.data);
-        setCategories(categoryResponse.data);
-        setBrands(brandResponse.data);
+        setProducts(productResponse);
+        setCategories(categoryResponse);
+        setBrands(brandResponse);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -95,6 +101,20 @@ const Products = () => {
 
     fetchData();
   }, []);
+
+  const getCategoryNames = (categoryIds) => {
+    // Sử dụng map để tạo một mảng các tên danh mục từ categoryIds
+    const categoryNames = categoryIds.map((categoryId) => {
+      // Tìm kiếm danh mục tương ứng với categoryId trong danh sách categories
+      const category = categories.find((cat) => cat.categoryId === categoryId);
+
+      // Trả về tên của danh mục nếu tìm thấy
+      return category ? category.categoryName : null;
+    });
+
+    // Lọc bỏ các giá trị null và trả về chuỗi kết hợp các tên danh mục, ngăn cách bằng dấu phẩy và khoảng trắng
+    return categoryNames.filter((name) => name !== null).join(", ");
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -155,8 +175,8 @@ const Products = () => {
 
   const handleAddClick = async () => {
     try {
-      const response = await axios.post(`${baseURL}/products`, product);
-      setProducts([...products, response.data]);
+      const response = ProductService.addProduct(product);
+      setProducts([...products, response]);
       handleAddDialogClose();
       setSnackbarOpen(true);
       setSnackbarSeverity("success");
@@ -203,7 +223,7 @@ const Products = () => {
 
   const handleEditDialogSave = async () => {
     try {
-      await axios.put(`${baseURL}/products`, product);
+      ProductService.updateProduct(product);
 
       const updatedProducts = products.map((p) =>
         p.productId === product.productId ? product : p
@@ -224,7 +244,7 @@ const Products = () => {
 
   const handleDeleteDialogConfirm = async () => {
     try {
-      await axios.delete(`${baseURL}/products/${selectedProduct.productId}`);
+      ProductService.deleteProduct(selectedProduct.productId);
       const updatedProducts = products.filter(
         (product) => product.productId !== selectedProduct.productId
       );
@@ -295,7 +315,15 @@ const Products = () => {
                       const value = product[column.id];
                       return (
                         <TableCell key={column.id} align="center">
-                          {column.id === "action" ? (
+                          {column.id === "categoryIds" ? (
+                            getCategoryNames(value)
+                          ) : column.id === "colorDTOs" && value.length > 0 ? (
+                            <img
+                              src={`/products/${value[0].colorImage}`}
+                              alt=""
+                              style={{ width: "100px", height: "100px" }}
+                            />
+                          ) : column.id === "action" ? (
                             <>
                               <IconButton
                                 color="success"
@@ -567,17 +595,15 @@ const Products = () => {
             </Select>
           </FormControl>
           <Typography variant="subtitle1">Colors:</Typography>
-          <div key="showColor">
-            {product.colorDTOs.map((color) => (
-              <div key={color.colorId}>
-                <span>{color.colorName}</span>
-                {/* <Button onClick={() => handleEditColor(color.colorId)}> */}
-                <Button onClick={() => handleColorId(color.colorId)}>
-                  Edit Color
-                </Button>
-              </div>
-            ))}
-          </div>
+          {product.colorDTOs.map((color) => (
+            <div key={color.colorId}>
+              <span>{color.colorName}</span>
+              {/* <Button onClick={() => handleEditColor(color.colorId)}> */}
+              <Button onClick={() => handleColorId(color.colorId)}>
+                Edit Color
+              </Button>
+            </div>
+          ))}
           <ColorButton onClick={handleColorButtonClick} />
         </DialogContent>
         <DialogActions>

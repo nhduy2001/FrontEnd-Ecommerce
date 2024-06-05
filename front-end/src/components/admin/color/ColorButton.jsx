@@ -10,7 +10,7 @@ const ColorButton = ({ onClick }) => {
       startIcon={<ColorLensIcon />}
       onClick={onClick}
     >
-      Chọn màu
+      Select Collor
     </Button>
   );
 };

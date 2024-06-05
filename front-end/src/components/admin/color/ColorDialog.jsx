@@ -5,10 +5,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import axios from "axios";
+import ProductService from "../../../service/admin/ProductService";
 
 const ColorDialog = ({ open, onClose, onUpload }) => {
-  const [colorImagePairs, setColorImagePairs] = useState([{ color: '', image: null }]);
+  const [colorImagePairs, setColorImagePairs] = useState([
+    { color: "", image: null },
+  ]);
 
   const handleColorChange = (index, e) => {
     const newPairs = [...colorImagePairs];
@@ -23,7 +25,7 @@ const ColorDialog = ({ open, onClose, onUpload }) => {
   };
 
   const handleAddColorImagePair = () => {
-    setColorImagePairs([...colorImagePairs, { color: '', image: null }]);
+    setColorImagePairs([...colorImagePairs, { color: "", image: null }]);
   };
 
   const handleUpload = async () => {
@@ -34,18 +36,10 @@ const ColorDialog = ({ open, onClose, onUpload }) => {
       formData.append("file", pair.image);
 
       try {
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/admin/products/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        const response = await ProductService.uploadImage(formData);
 
-        console.log("File uploaded successfully:", response.data);
-        uploadedImages.push({ colorName: pair.color, colorImage: response.data });
+        console.log("File uploaded successfully:", response);
+        uploadedImages.push({ colorName: pair.color, colorImage: response });
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -86,7 +80,7 @@ const ColorDialog = ({ open, onClose, onUpload }) => {
         <Button
           onClick={handleUpload}
           color="primary"
-          disabled={colorImagePairs.some(pair => !pair.color || !pair.image)}
+          disabled={colorImagePairs.some((pair) => !pair.color || !pair.image)}
         >
           Upload
         </Button>
