@@ -74,12 +74,11 @@ const CheckoutService = {
       });
       return response.data;
     } catch (error) {
-      //   window.localStorage.removeItem("user");
-      //   window.localStorage.removeItem("token");
-      //   window.localStorage.removeItem("refreshToken");
-      //   window.location.href = "/login";
-      //   throw error;
-      console.log("error");
+      window.localStorage.removeItem("user");
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("refreshToken");
+      window.location.href = "/login";
+      throw error;
     }
   },
 };

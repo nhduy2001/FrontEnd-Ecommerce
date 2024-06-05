@@ -194,19 +194,12 @@ const SingleProduct = () => {
                       />
                     </Box>
 
-                    <Box display="flex" gap={2} sx={{ mt: "1vw" }}>
+                    <Box display="flex" sx={{ mt: "1vw" }}>
                       <Button
                         variant="contained"
                         color="primary"
                         size="large"
                         sx={{ flexGrow: 1 }}
-                      >
-                        Buy now
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        size="medium"
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent triggering the Card's onClick event
                           handleAddToCart(product.productId);

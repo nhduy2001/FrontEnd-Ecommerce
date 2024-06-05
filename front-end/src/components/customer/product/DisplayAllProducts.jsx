@@ -42,10 +42,7 @@ const DisplayAllProducts = () => {
         setTotalProducts(data.totalElements);
       })
       .catch((error) => {
-        console.error(
-          "Đã xảy ra lỗi khi lấy danh sách sản phẩm:",
-          error.message
-        );
+        console.error("Cannot get products:", error.message);
       });
   }, [filters, page, sortDir]);
 

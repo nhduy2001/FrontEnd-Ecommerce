@@ -44,6 +44,7 @@ const Profile = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData((prevUserData) => ({ ...prevUserData, [name]: value }));
+    console.log(name, value);
   };
 
   const handleCloseSnackbar = (event, reason) => {

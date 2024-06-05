@@ -54,21 +54,33 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const CustomerNavBar = () => {
-  const [numberCart, setNumberCart] = useState(0); // State to store the number of items in the cart
+  const [numberCart, setNumberCart] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  // eslint-disable-next-line
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
 
   useEffect(() => {
-    async function fetchCartDetails() {
-      try {
-        const cartDetails = await CartService.getCart();
-        setNumberCart(cartDetails.length); // Set the number of items in the cart
-      } catch (error) {
-        console.error("Failed to fetch cart details", error);
+    // Check if user is logged in
+    const checkLoginStatus = () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        setIsLoggedIn(true);
+        fetchCartDetails(); // Fetch cart details only if user is logged in
       }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  const fetchCartDetails = async () => {
+    try {
+      const cartDetails = await CartService.getCart();
+      setNumberCart(cartDetails.length);
+    } catch (error) {
+      console.error("Failed to fetch cart details", error);
     }
-    fetchCartDetails();
-  }, []); // Fetch cart details on component mount
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -126,8 +138,7 @@ const CustomerNavBar = () => {
             sx={{ display: { xs: "flex", md: "flex", alignItems: "center" } }}
           >
             <TrackingOrder />
-            <Cart numberCart={numberCart} />{" "}
-            <LoginCheck />
+            <Cart numberCart={numberCart} /> <LoginCheck />
           </Box>
         </Toolbar>
       </Box>

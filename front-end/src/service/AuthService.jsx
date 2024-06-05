@@ -3,21 +3,20 @@ import { jwtDecode } from "jwt-decode";
 
 const baseUrl = "http://localhost:8080/api/v1/public";
 
-// Hàm gửi yêu cầu sử dụng refresh token để lấy token mới
+// send requst to refresh token
 async function getNewToken(refreshToken) {
   try {
     const response = await axios.post(`${baseUrl}/refresh`, {
       token: refreshToken,
     });
-    console.log("đã refesh token");
-    return response.data.token; // Trả về token mới từ phản hồi
+    console.log("Token is refreshed");
+    return response.data.token;
   } catch (error) {
-    throw new Error("Không thể lấy token mới từ máy chủ.");
+    throw new Error("Cannot get token from server.");
   }
 }
 
 const AuthService = {
-  // Gửi yêu cầu đăng nhập và nhận token và refresh token
   async signIn(username, password) {
     try {
       const response = await axios.post(`${baseUrl}/signIn`, {
@@ -33,7 +32,7 @@ const AuthService = {
       localStorage.setItem("user", JSON.stringify(user.sub));
       return response.data;
     } catch (error) {
-      throw new Error("Cannot Login");
+      throw new Error("Invalid username or password");
     }
   },
 
@@ -46,26 +45,22 @@ const AuthService = {
     }
   },
 
-  // Kiểm tra và cập nhật token khi cần thiết
+  // Check and update token
   async checkAndUpdateToken(token, refreshToken) {
     try {
       const currentTime = Date.now() / 1000;
       const decodedToken = jwtDecode(token);
 
-      console.log(currentTime);
-      console.log(decodedToken);
-
-      // Kiểm tra xem token đã hết hạn hay chưa
+      // Check token is valid
       if (decodedToken.exp < currentTime) {
-        // Token đã hết hạn, sử dụng refresh token để lấy token mới
+        // Token is expired, get new token
         const newToken = await getNewToken(refreshToken);
-        console.log(newToken);
         return newToken;
       } else {
         return token;
       }
     } catch (error) {
-      throw new Error("Không thể kiểm tra và cập nhật token.");
+      throw new Error("Cannot check or update token.");
     }
   },
 };

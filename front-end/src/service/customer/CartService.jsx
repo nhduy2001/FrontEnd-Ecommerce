@@ -50,10 +50,6 @@ const CartService = {
       });
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
       throw error;
     }
   },

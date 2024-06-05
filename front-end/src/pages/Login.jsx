@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Box, TextField, Button, Typography } from "@mui/material";
+import { Container, Box, TextField, Button, Typography, Alert } from "@mui/material";
 import AuthService from "../service/AuthService";
 import ProfileService from "../service/customer/ProfileService";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -20,7 +21,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      setError("Incorrect username or password. Please try again."); // Thiết lập thông báo lỗi
       // Handle login error
     }
   };
@@ -41,6 +42,11 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
+        {error && ( // Hiển thị thông báo lỗi nếu có
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
           <TextField
             margin="normal"

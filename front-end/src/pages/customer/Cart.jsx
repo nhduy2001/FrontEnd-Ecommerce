@@ -21,8 +21,10 @@ function formatPrice(n) {
 
 const Cart = () => {
   const [detailedCartList, setDetailedCartList] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
+    const isLogin = JSON.parse(localStorage.getItem("user"));
     const fetchCartAndProductDetails = async () => {
       try {
         // Fetch cart items
@@ -52,14 +54,12 @@ const Cart = () => {
         setDetailedCartList(detailedCartItems);
         console.log("Detailed Cart items:", detailedCartItems);
       } catch (error) {
-        console.error(
-          "Đã xảy ra lỗi khi lấy danh sách sản phẩm:",
-          error.message
-        );
+        console.error("Error when get all products from cart:", error.message);
       }
     };
-
-    fetchCartAndProductDetails();
+    if (isLogin) {
+      fetchCartAndProductDetails();
+    }
   }, []);
 
   const handleUpdateQuantity = (cartDetailId, newQuantity) => {
@@ -90,9 +90,9 @@ const Cart = () => {
   const handleCheckout = async () => {
     try {
       const response = await CartService.updateCart(detailedCartList);
-      console.log("Giỏ hàng đã được cập nhật thành công:", response);
+      console.log("Update cart successfully:", response);
     } catch (error) {
-      console.error("Lỗi khi cập nhật giỏ hàng:", error.message);
+      console.error("Error update cart:", error.message);
     }
   };
 
@@ -163,13 +163,15 @@ const Cart = () => {
           ))}
           <Link to="/checkout">
             <Grid container justifyContent="center">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleCheckout()}
-              >
-                Proceed to checkout
-              </Button>
+              {user && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleCheckout()}
+                >
+                  Proceed to checkout
+                </Button>
+              )}
             </Grid>
           </Link>
         </CardContent>

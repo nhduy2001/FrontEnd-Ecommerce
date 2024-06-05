@@ -5,7 +5,7 @@ import FinalCartInfo from "../../components/customer/order/FinalCartInfo";
 import CheckoutService from "../../service/customer/CheckoutService";
 import ProductService from "../../service/customer/ProductService";
 
-const Checkout = () => {
+const Checkout = (buynow) => {
   const [detailedCartList, setDetailedCartList] = useState([]);
   const [shippingInfo, setShippingInfo] = useState(null);
 
