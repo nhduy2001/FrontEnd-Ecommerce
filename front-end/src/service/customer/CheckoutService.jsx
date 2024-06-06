@@ -65,8 +65,6 @@ const CheckoutService = {
         totalPrice: totalPrice,
       };
 
-      console.log(orderData);
-
       const response = await axios.post(`${baseUrl}/orders`, orderData, {
         headers: {
           Authorization: `Bearer ${updatedToken}`,
@@ -74,11 +72,11 @@ const CheckoutService = {
       });
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 };

@@ -21,7 +21,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      setError("Incorrect username or password. Please try again."); // Thiết lập thông báo lỗi
+      setError("Incorrect username or password. Please try again.");
       // Handle login error
     }
   };

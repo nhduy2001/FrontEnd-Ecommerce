@@ -41,7 +41,11 @@ const AuthService = {
       const response = await axios.post(`${baseUrl}/signUp`, user);
       return response.data;
     } catch (error) {
-      throw new Error("Cannot Sign Up");
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -60,7 +64,10 @@ const AuthService = {
         return token;
       }
     } catch (error) {
-      throw new Error("Cannot check or update token.");
+      window.localStorage.removeItem("user");
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("refreshToken");
+      window.location.href = "/login";
     }
   },
 };

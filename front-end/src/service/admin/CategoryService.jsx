@@ -21,11 +21,11 @@ const CategoryService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -46,11 +46,11 @@ const CategoryService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -71,11 +71,11 @@ const CategoryService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -96,11 +96,11 @@ const CategoryService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 };

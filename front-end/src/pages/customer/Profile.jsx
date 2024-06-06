@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Typography, TextField, Button, Alert } from "@mui/material";
 import ProfileService from "../../service/customer/ProfileService";
 import CustomSnackbar from "../../components/CustomSnackbar";
 
@@ -14,6 +14,7 @@ const Profile = () => {
     email: "",
     address: "",
   });
+  const [error, setError] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -30,21 +31,20 @@ const Profile = () => {
     fetchUserProfile();
   }, []);
 
-  const handleSignUp = async () => {
+  const handleUpdate = async () => {
     try {
       await ProfileService.updateProfile(userData);
       setSnackbarOpen(true);
       setSnackbarSeverity("success");
       setSnackbarMessage("Profile updated successfully!");
     } catch (error) {
-      throw error;
+      setError(error.message);
     }
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUserData((prevUserData) => ({ ...prevUserData, [name]: value }));
-    console.log(name, value);
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -74,7 +74,12 @@ const Profile = () => {
               <Typography component="h1" variant="h5">
                 User Profile
               </Typography>
-              <Box component="form" onSubmit={handleSignUp} sx={{ mt: 1 }}>
+              {error && (
+                <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+                  {error}
+                </Alert>
+              )}
+              <Box component="form" onSubmit={handleUpdate} sx={{ mt: 1 }}>
                 <TextField
                   margin="normal"
                   required
@@ -88,7 +93,6 @@ const Profile = () => {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="password"
                   label="Password"
@@ -116,7 +120,6 @@ const Profile = () => {
                 />
                 <TextField
                   margin="normal"
-                  required
                   fullWidth
                   label="Email Address"
                   name="email"
@@ -137,7 +140,7 @@ const Profile = () => {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
-                  onClick={handleSignUp}
+                  onClick={handleUpdate}
                 >
                   Update
                 </Button>

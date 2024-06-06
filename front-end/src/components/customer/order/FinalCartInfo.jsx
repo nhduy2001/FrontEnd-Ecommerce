@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, Divider, Button, FormControl } from "@mui/material";
+import { Grid, Typography, Divider, Button, Alert } from "@mui/material";
 import CheckoutService from "../../../service/customer/CheckoutService";
 
 const FinalCartInfo = ({ detailedCartList, shippingInfo }) => {
   const [totalPrice, setTotalPrice] = useState(0);
+  const [error, setError] = useState(null);
   const baseUrl = "http://localhost:3000/";
 
   useEffect(() => {
@@ -20,10 +21,9 @@ const FinalCartInfo = ({ detailedCartList, shippingInfo }) => {
   const addOrder = async () => {
     try {
       await CheckoutService.addOrder(shippingInfo, totalPrice);
-      console.log("Order confirmed!");
       window.location.href = baseUrl;
     } catch (error) {
-      console.error("Failed to confirm order:", error);
+      setError(error.message);
     }
   };
 
@@ -79,12 +79,16 @@ const FinalCartInfo = ({ detailedCartList, shippingInfo }) => {
           </Typography>
         </Grid>
       </Grid>
-      <FormControl fullWidth sx={{ mt: 2 }}></FormControl>
+      {error && (
+        <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+          {error}
+        </Alert>
+      )}
       <Button
         variant="contained"
         color="primary"
         fullWidth
-        sx={{ mt: 2 }}
+        sx={{ mt: 3 }}
         onClick={addOrder}
       >
         Confirm

@@ -52,7 +52,6 @@ const ShippingInfo = ({ user, onUserChange }) => {
         name="email"
         value={changeInfo.email}
         margin="normal"
-        required
         onChange={handleChange}
       />
       <TextField

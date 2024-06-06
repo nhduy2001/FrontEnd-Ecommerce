@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import { Container, Box, Typography, TextField, Button, Alert } from "@mui/material";
 import AuthService from "../service/AuthService";
 
 const SignUp = () => {
@@ -14,15 +14,16 @@ const SignUp = () => {
     role: "user",
     confirmed: true,
   });
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (event) => {
+    event.preventDefault();
     try {
       await AuthService.signUp(userData);
       navigate("/login");
     } catch (error) {
-      console.error("Login failed:", error);
-      // Handle login error
+      setError(error.message);
     }
   };
 
@@ -48,6 +49,11 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
+        {error && ( 
+          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+            {error}
+          </Alert>
+        )}
         <Box component="form" onSubmit={handleSignUp} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -97,7 +103,6 @@ const SignUp = () => {
           />
           <TextField
             margin="normal"
-            required
             fullWidth
             id="email"
             label="Email Address"
@@ -118,11 +123,10 @@ const SignUp = () => {
             onChange={handleChange}
           />
           <Button
-            type="button"
+            type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={handleSignUp}
           >
             Sign Up
           </Button>

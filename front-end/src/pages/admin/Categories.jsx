@@ -20,6 +20,7 @@ import {
   IconButton,
   Button,
   Box,
+  Alert,
 } from "@mui/material";
 import CategoryService from "../../service/admin/CategoryService";
 
@@ -41,6 +42,7 @@ const Categories = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -71,9 +73,13 @@ const Categories = () => {
 
       setCategories([...categories, response]);
 
+      setSnackbarOpen(true);
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Category updated successfully!");
+
       handleAddDialogClose();
     } catch (error) {
-      console.error("Error adding category:", error);
+      setError(error.message);
     }
   };
 
@@ -124,9 +130,7 @@ const Categories = () => {
       setSnackbarSeverity("success");
       setSnackbarMessage("Category updated successfully!");
     } catch (error) {
-      setSnackbarOpen(true);
-      setSnackbarSeverity("error");
-      setSnackbarMessage("Error updating category!");
+      setError(error.message);
     }
   };
 
@@ -244,6 +248,11 @@ const Categories = () => {
       {/* Add Dialog */}
       <Dialog open={openAddDialog} onClose={handleAddDialogClose}>
         <DialogTitle>Add Category</DialogTitle>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+            {error}
+          </Alert>
+        )}
         <DialogContent>
           <TextField
             autoFocus
@@ -269,6 +278,11 @@ const Categories = () => {
       {/* Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleEditDialogClose}>
         <DialogTitle>Edit Category</DialogTitle>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
+            {error}
+          </Alert>
+        )}
         <DialogContent>
           <TextField
             placeholder={selectedCategory ? selectedCategory.categoryName : ""}

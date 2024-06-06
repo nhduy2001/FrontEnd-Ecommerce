@@ -14,7 +14,11 @@ const ProfileService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
   async getUserProfile() {
@@ -33,11 +37,11 @@ const ProfileService = {
       });
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
   async updateProfile(userData) {
@@ -56,11 +60,11 @@ const ProfileService = {
       });
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 };
