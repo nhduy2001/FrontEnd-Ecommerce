@@ -146,7 +146,7 @@ const Categories = () => {
       setSnackbarSeverity("success");
       setSnackbarMessage("Category deleted successfully!");
     } catch (error) {
-      console.error("Error deleting category:", error);
+      setError(error.message);
     }
   };
 

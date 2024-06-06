@@ -46,11 +46,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -71,11 +71,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -96,11 +96,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -121,11 +121,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -146,11 +146,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 
@@ -163,7 +163,7 @@ const ProductService = {
         token,
         refreshToken
       );
-      const response = await axios.post(`${baseUrl}/products/upload`,image, {
+      const response = await axios.post(`${baseUrl}/products/upload`, image, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${updatedToken}`,
@@ -172,11 +172,11 @@ const ProductService = {
       console.log(response);
       return response.data;
     } catch (error) {
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
-      throw error;
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     }
   },
 };
